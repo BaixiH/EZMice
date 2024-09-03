@@ -17,7 +17,6 @@
       <!-- Background Subtraction (Optional based on your setup) -->
       <Expression xsi:type="Combinator">
         <Combinator xsi:type="q1:BackgroundSubtraction">
-          <!-- Add your specific background subtraction settings here if needed -->
         </Combinator>
       </Expression>
 
@@ -34,21 +33,22 @@
         <q2:Script>@returns(bool)
 def process(input):
     centroid = input.Centroid
+    center_x_min = 8.79
+    center_x_max = 51.21
+    center_y_min = 8.79
+    center_y_max = 51.21
     
-    # Central zone boundaries (directly set based on given dimensions)
-    center_x_min = 8.79  # cm
-    center_x_max = 51.21  # cm
-    center_y_min = 8.79  # cm
-    center_y_max = 51.21  # cm
+    # Compare centroid X and Y coordinates with zone boundaries
+    x_within_bounds = centroid.X >= center_x_min
+    x_within_bounds = x_within_bounds and centroid.X <= center_x_max
     
-    # Check if the centroid is within the central zone using simple conditions
-    in_center_x = (centroid.X >= center_x_min) and (centroid.X <= center_x_max)
-    in_center_y = (centroid.Y >= center_y_min) and (centroid.Y <= center_y_max)
+    y_within_bounds = centroid.Y >= center_y_min
+    y_within_bounds = y_within_bounds and centroid.Y <= center_y_max
     
-    if in_center_x and in_center_y:
-        return True
-    else:
-        return False
+    # Determine if centroid is in the central zone
+    in_center = x_within_bounds and y_within_bounds
+    
+    return in_center
 </q2:Script>
       </Expression>
 
@@ -72,19 +72,11 @@ def process(value):
               <q2:Script>import math 
 @returns(float)
 def process(value):
-  # Spatial resolution (assuming centroid positions are in cm)
   dx = value.Item1.X - value.Item2.X
   dy = value.Item1.Y - value.Item2.Y
-
-  # Calculate the distance in cm
   distance_cm = math.hypot(dx, dy)
-
-  # Time between frames (assuming 30 fps)
-  time_between_frames = 1 / 30.0  # in seconds
-
-  # Calculate velocity in cm/s
-  velocity_cm_s = distance_cm / time_between_frames
-  return velocity_cm_s</q2:Script>
+  time_between_frames = 1 / 30.0
+  return distance_cm / time_between_frames</q2:Script>
             </Expression>
             <Expression xsi-type="Combinator">
               <Combinator xsi-type="Skip">
@@ -166,7 +158,4 @@ def process(value):
   <ExtensionTypes>
     <Type>Bonsai.Vision.FileCapture, Bonsai.Vision, Version=2.8.5.0, Culture=neutral, PublicKeyToken=null</Type>
     <Type>Bonsai.Vision.BlobTracking, Bonsai.Vision, Version=2.8.5.0, Culture=neutral, PublicKeyToken=null</Type>
-    <Type>Bonsai.Vision.CsvWriter, Bonsai.Vision, Version=2.8.5.0, Culture=neutral, PublicKeyToken=null</Type>
-    <Type>Bonsai.Scripting.PythonTransform, Bonsai.Scripting, Version=2.8.5.0, Culture=neutral, PublicKeyToken=null</Type>
-  </ExtensionTypes>
-</WorkflowBuilder>
+    <Type>Bonsai.Vision.CsvWriter, Bonsai.Vision, Version=2.8.5.0, Culture=neutral, PublicKeyToken
