@@ -38,15 +38,18 @@ def process(input):
     center_y_min = 8.79
     center_y_max = 51.21
     
-    # Compare centroid X and Y coordinates with zone boundaries
-    x_within_bounds = centroid.X >= center_x_min
-    x_within_bounds = x_within_bounds and centroid.X <= center_x_max
+    # Convert comparisons to integers (0 or 1)
+    x_above_min = 1 if centroid.X >= center_x_min else 0
+    x_below_max = 1 if centroid.X <= center_x_max else 0
+    y_above_min = 1 if centroid.Y >= center_y_min else 0
+    y_below_max = 1 if centroid.Y <= center_y_max else 0
     
-    y_within_bounds = centroid.Y >= center_y_min
-    y_within_bounds = y_within_bounds and centroid.Y <= center_y_max
+    # Sum results to determine if within bounds
+    in_center_x = x_above_min + x_below_max
+    in_center_y = y_above_min + y_below_max
     
-    # Determine if centroid is in the central zone
-    in_center = x_within_bounds and y_within_bounds
+    # Only return True if both X and Y are within bounds
+    in_center = (in_center_x == 2) and (in_center_y == 2)
     
     return in_center
 </q2:Script>
@@ -158,4 +161,4 @@ def process(value):
   <ExtensionTypes>
     <Type>Bonsai.Vision.FileCapture, Bonsai.Vision, Version=2.8.5.0, Culture=neutral, PublicKeyToken=null</Type>
     <Type>Bonsai.Vision.BlobTracking, Bonsai.Vision, Version=2.8.5.0, Culture=neutral, PublicKeyToken=null</Type>
-    <Type>Bonsai.Vision.CsvWriter, Bonsai.Vision, Version=2.8.5.0, Culture=neutral, PublicKeyToken
+    <Type>Bonsai.Vision.CsvWriter, Bonsai.Vision, Version=2.8.5.0, Culture=neutral, Public
