@@ -41,12 +41,15 @@ def process(input):
     center_y_min = 8.79  # cm
     center_y_max = 51.21  # cm
     
-    # Check if the centroid is within the central zone
-    in_center_x = center_x_min <= centroid.X and centroid.X <= center_x_max
-    in_center_y = center_y_min <= centroid.Y and centroid.Y <= center_y_max
-    in_center = in_center_x and in_center_y
+    # Check if the centroid is within the central zone using simple conditions
+    in_center_x = (centroid.X >= center_x_min) and (centroid.X <= center_x_max)
+    in_center_y = (centroid.Y >= center_y_min) and (centroid.Y <= center_y_max)
     
-    return in_center</q2:Script>
+    if in_center_x and in_center_y:
+        return True
+    else:
+        return False
+</q2:Script>
       </Expression>
 
       <!-- Count Frames in Center Zone -->
