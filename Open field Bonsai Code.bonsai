@@ -35,20 +35,16 @@
 def process(input):
     centroid = input.Centroid
     
-    # Arena dimensions
-    arena_size = 60.0  # cm, side length of the square arena
-
-    # Central Zone Dimensions
-    center_size = 42.42  # cm, side length of the central square zone
-
-    # Calculate boundaries of the central zone
-    center_x_min = (arena_size - center_size) / 2
-    center_x_max = center_x_min + center_size
-    center_y_min = (arena_size - center_size) / 2
-    center_y_max = center_y_min + center_size
+    # Central zone boundaries (directly set based on given dimensions)
+    center_x_min = 8.79  # cm
+    center_x_max = 51.21  # cm
+    center_y_min = 8.79  # cm
+    center_y_max = 51.21  # cm
     
     # Check if the centroid is within the central zone
-    in_center = (center_x_min <= centroid.X <= center_x_max) and (center_y_min <= centroid.Y <= center_y_max)
+    in_center_x = (center_x_min <= centroid.X) and (centroid.X <= center_x_max)
+    in_center_y = (center_y_min <= centroid.Y) and (centroid.Y <= center_y_max)
+    in_center = in_center_x and in_center_y
     
     return in_center</q2:Script>
       </Expression>
@@ -107,7 +103,7 @@ def process(value):
               <Label>Source1</Label>
             </Edge>
             <Edge>
-              <From>1</From>
+              <From>1</To>
               <To>2</To>
               <Label>Source2</Label>
             </Edge>
