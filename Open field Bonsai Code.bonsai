@@ -42,8 +42,8 @@ def process(input):
     center_y_max = 51.21  # cm
     
     # Check if the centroid is within the central zone
-    in_center_x = (center_x_min <= centroid.X) and (centroid.X <= center_x_max)
-    in_center_y = (center_y_min <= centroid.Y) and (centroid.Y <= center_y_max)
+    in_center_x = center_x_min <= centroid.X and centroid.X <= center_x_max
+    in_center_y = center_y_min <= centroid.Y and centroid.Y <= center_y_max
     in_center = in_center_x and in_center_y
     
     return in_center</q2:Script>
