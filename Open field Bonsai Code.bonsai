@@ -33,25 +33,11 @@
         <q2:Script>@returns(bool)
 def process(input):
     centroid = input.Centroid
-    center_x_min = 8.79
-    center_x_max = 51.21
-    center_y_min = 8.79
-    center_y_max = 51.21
     
-    # Convert comparisons to integers (0 or 1)
-    x_above_min = 1 if centroid.X >= center_x_min else 0
-    x_below_max = 1 if centroid.X <= center_x_max else 0
-    y_above_min = 1 if centroid.Y >= center_y_min else 0
-    y_below_max = 1 if centroid.Y <= center_y_max else 0
-    
-    # Sum results to determine if within bounds
-    in_center_x = x_above_min + x_below_max
-    in_center_y = y_above_min + y_below_max
-    
-    # Only return True if both X and Y are within bounds
-    in_center = (in_center_x == 2) and (in_center_y == 2)
-    
-    return in_center
+    if 8.79 <= centroid.X <= 51.21 and 8.79 <= centroid.Y <= 51.21:
+        return True
+    else:
+        return False
 </q2:Script>
       </Expression>
 
@@ -161,4 +147,7 @@ def process(value):
   <ExtensionTypes>
     <Type>Bonsai.Vision.FileCapture, Bonsai.Vision, Version=2.8.5.0, Culture=neutral, PublicKeyToken=null</Type>
     <Type>Bonsai.Vision.BlobTracking, Bonsai.Vision, Version=2.8.5.0, Culture=neutral, PublicKeyToken=null</Type>
-    <Type>Bonsai.Vision.CsvWriter, Bonsai.Vision, Version=2.8.5.0, Culture=neutral, Public
+    <Type>Bonsai.Vision.CsvWriter, Bonsai.Vision, Version=2.8.5.0, Culture=neutral, PublicKeyToken=null</Type>
+    <Type>Bonsai.Scripting.PythonTransform, Bonsai.Scripting, Version=2.8.5.0, Culture=neutral, PublicKeyToken=null</Type>
+  </ExtensionTypes>
+</WorkflowBuilder>
