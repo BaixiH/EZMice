@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<WorkflowBuilder Version="2.8.5">
+  <Workflow xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:q3="clr-namespace:Bonsai.Arduino;assembly=Bonsai.Arduino" xmlns:q2="clr-namespace:Bonsai.Scripting;assembly=Bonsai.Scripting" xmlns:q1="clr-namespace:Bonsai.Vision;assembly=Bonsai.Vision" xmlns="https://horizongir.org/bonsai">
+    <Nodes>
+      <!-- Video Capture -->
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="q1:FileCapture">
+          <q1:FileName>C:\Users\fatinnout\Desktop\EZMice\OpenField\animal1.mp4</q1:FileName>
+          <q1:PlaybackRate>1</q1:PlaybackRate>
+          <q1:StartPosition>0</q1:StartPosition>
+          <q1:PositionUnits>Frames</q1:PositionUnits>
+          <q1:Loop>false</q1:Loop>
+          <q1:Playing>true</q1:Playing>
+        </Combinator>
+      </Expression>
+
+      <!-- Background Subtraction (Optional based on your setup) -->
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="q1:BackgroundSubtraction">
+          <!-- Add your specific background subtraction settings here -->
+        </Combinator>
+      </Expression>
+
+      <!-- Blob Tracking (Mouse Tracking) -->
+      <Expression xsi:type="Combinator">
+        <Combinator xsi:type="q1:BlobTracking">
+          <q1:MinArea>100</q1:MinArea>
+          <q1:MaxArea>10000</q1:MaxArea>
+        </Combinator>
+      </Expression>
+
+      <!-- Calculate if the mouse is in the central zone -->
+      <Expression xsi:type="q2:PythonTransform">
+        <q2:Script>@returns(bool)
+def process(input):
+    centroid = input.Centroid
+    
+    # Arena dimensions
+    arena_size = 60.0  # cm, side length of the square arena
+
+    # Central Zone Dimensions
+    center_size = 42.42  # cm, side length of the central square zone
+
+    # Peripheral Zone Width
+    peripheral_width = 17.58  # cm, width of the peripheral zone
+
+    # Calculate boundaries of the central zone
+    center_x_min = (arena_size - center_size) / 2
+    center_x_max = (arena_size + center_size) / 2
+    center_y_min = (arena_size - center_size) / 2
+    center_y_max = (arena_size + center_size) / 2
+    
+    # Check if the centroid is within the central zone
+    in_center = (center_x_min <= centroid.X <= center_x_max) and (center_y_min <= centroid.Y <= center_y_max)
+    return in_center</q2:Script>
+      </Expression>
+
+      <!-- Count Frames in Center Zone -->
+      <Expression xsi:type="q2:PythonTransform">
+        <q2:Script>@returns(tuple)
+def process(value):
+    in_center, total_frames = value
+    frames_in_center = sum(in_center)
+    percentage_time_in_center = (frames_in_center / total_frames) * 100
+    return frames_in_center, percentage_time_in_center</q2:Script>
+      </Expression>
+
+      <!-- Calculate Velocity -->
+      <Expression xsi-type="NestedWorkflow">
+        <Name>Velocity</Name>
+        <Workflow>
+          <Nodes>
+            <Expression xsi-type="q2:PythonTransform">
+              <q2:Name>Euclidean Distance</q2:Name>
+              <q2:Script>import math 
+@returns(float)
+def process(value):
+  dx = value.Item1.X - value.Item2.X
+  dy = value.Item1.Y - value.Item2.Y
+  return math.hypot(dx, dy)</q2:Script>
+            </Expression>
+            <Expression xsi-type="Combinator">
+              <Combinator xsi-type="Skip">
+                <Count>1</Count>
+              </Combinator>
+            </Expression>
+            <Expression xsi-type="Combinator">
+              <Combinator xsi-type="Zip" />
+            </Expression>
+            <Expression xsi-type="WorkflowInput">
+              <Name>Source1</Name>
+            </Expression>
+            <Expression xsi-type="WorkflowOutput" />
+          </Nodes>
+          <Edges>
+            <Edge>
+              <From>0</From>
+              <To>4</To>
+              <Label>Source1</Label>
+            </Edge>
+            <Edge>
+              <From>1</From>
+              <To>2</To>
+              <Label>Source2</Label>
+            </Edge>
+            <Edge>
+              <From>2</From>
+              <To>0</To>
+              <Label>Source1</Label>
+            </Edge>
+            <Edge>
+              <From>3</From>
+              <To>1</To>
+              <Label>Source1</Label>
+            </Edge>
+            <Edge>
+              <From>3</From>
+              <To>2</To>
+              <Label>Source1</Label>
+            </Edge>
+          </Edges>
+        </Workflow>
+      </Expression>
+
+      <!-- Save Results to CSV -->
+      <Expression xsi-type="q1:CsvWriter">
+        <q1:FileName>C:\Users\fatinnout\Desktop\EZMice\OpenField\animal1_output.csv</q1:FileName>
+        <q1:Headers>true</q1:Headers>
+      </Expression>
+    </Nodes>
+    <Edges>
+      <Edge>
+        <From>0</From>
+        <To>1</To>
+        <Label>Source1</Label>
+      </Edge>
+      <Edge>
+        <From>1</From>
+        <To>2</To>
+        <Label>Source1</Label>
+      </Edge>
+      <Edge>
+        <From>2</From>
+        <To>3</To>
+        <Label>Source1</Label>
+      </Edge>
+      <Edge>
+        <From>3</From>
+        <To>4</To>
+        <Label>Source1</Label>
+      </Edge>
+      <Edge>
+        <From>4</From>
+        <To>5</To>
+        <Label>Source1</Label>
+      </Edge>
+    </Edges>
+  </Workflow>
+  <ExtensionTypes>
+    <Type>Bonsai.Vision.FileCapture, Bonsai.Vision, Version=2.8.5.0, Culture=neutral, PublicKeyToken=null</Type>
+    <Type>Bonsai.Vision.BlobTracking, Bonsai.Vision, Version=2.8.5.0, Culture=neutral, PublicKeyToken=null</Type>
+    <Type>Bonsai.Vision.CsvWriter, Bonsai.Vision, Version=2.8.5.0, Culture=neutral, PublicKeyToken=null</Type>
+    <Type>Bonsai.Scripting.PythonTransform, Bonsai.Scripting, Version=2.8.5.0, Culture=neutral, PublicKeyToken=null</Type>
+  </ExtensionTypes>
+</WorkflowBuilder>
