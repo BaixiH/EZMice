@@ -17,7 +17,7 @@
       <!-- Background Subtraction (Optional based on your setup) -->
       <Expression xsi:type="Combinator">
         <Combinator xsi:type="q1:BackgroundSubtraction">
-          <!-- Add your specific background subtraction settings here -->
+          <!-- Add your specific background subtraction settings here if needed -->
         </Combinator>
       </Expression>
 
