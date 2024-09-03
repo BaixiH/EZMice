@@ -30,7 +30,7 @@
       </Expression>
 
       <!-- Calculate if the mouse is in the central zone -->
-      <Expression xsi:type="q2:PythonTransform">
+      <Expression xsi-type="q2:PythonTransform">
         <q2:Script>@returns(bool)
 def process(input):
     centroid = input.Centroid
@@ -41,25 +41,20 @@ def process(input):
     # Central Zone Dimensions
     center_size = 42.42  # cm, side length of the central square zone
 
-    # Peripheral Zone Width
-    peripheral_width = 17.58  # cm, width of the peripheral zone
-
     # Calculate boundaries of the central zone
     center_x_min = (arena_size - center_size) / 2
-    center_x_max = (arena_size + center_size) / 2
+    center_x_max = center_x_min + center_size
     center_y_min = (arena_size - center_size) / 2
-    center_y_max = (arena_size + center_size) / 2
+    center_y_max = center_y_min + center_size
     
     # Check if the centroid is within the central zone
-    in_center_x = (center_x_min <= centroid.X) and (centroid.X <= center_x_max)
-    in_center_y = (center_y_min <= centroid.Y) and (centroid.Y <= center_y_max)
-    in_center = in_center_x and in_center_y
+    in_center = (center_x_min <= centroid.X <= center_x_max) and (center_y_min <= centroid.Y <= center_y_max)
     
     return in_center</q2:Script>
       </Expression>
 
       <!-- Count Frames in Center Zone -->
-      <Expression xsi:type="q2:PythonTransform">
+      <Expression xsi-type="q2:PythonTransform">
         <q2:Script>@returns(tuple)
 def process(value):
     in_center, total_frames = value
@@ -117,18 +112,18 @@ def process(value):
               <Label>Source2</Label>
             </Edge>
             <Edge>
-              <From>2</From>
-              <To>0</From>
+              <From>2</To>
+              <To>0</To>
               <Label>Source1</Label>
             </Edge>
             <Edge>
-              <From>3</From>
-              <To>1</From>
+              <From>3</To>
+              <To>1</To>
               <Label>Source1</Label>
             </Edge>
             <Edge>
-              <From>3</From>
-              <To>2</From>
+              <From>3</To>
+              <To>2</To>
               <Label>Source1</Label>
             </Edge>
           </Edges>
@@ -143,22 +138,22 @@ def process(value):
     </Nodes>
     <Edges>
       <Edge>
-        <From>0</From>
+        <From>0</To>
         <To>1</To>
         <Label>Source1</Label>
       </Edge>
       <Edge>
-        <From>1</From>
+        <From>1</To>
         <To>2</To>
         <Label>Source1</Label>
       </Edge>
       <Edge>
-        <From>2</From>
+        <From>2</To>
         <To>3</To>
         <Label>Source1</Label>
       </Edge>
       <Edge>
-        <From>3</From>
+        <From>3</To>
         <To>4</To>
         <Label>Source1</Label>
       </Edge>
