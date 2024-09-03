@@ -63,9 +63,10 @@ def process(value):
 def process(value):
   dx = value.Item1.X - value.Item2.X
   dy = value.Item1.Y - value.Item2.Y
-  distance_cm = math.hypot(dx, dy)
-  time_between_frames = 1 / 30.0
-  return distance_cm / time_between_frames</q2:Script>
+  distance_cm = math.hypot(dx, dy)  # Calculate distance in cm
+  time_between_frames = 1 / 30.0  # 30 FPS, so 1/30th of a second per frame
+  return distance_cm / time_between_frames  # Velocity in cm/s
+</q2:Script>
             </Expression>
             <Expression xsi-type="Combinator">
               <Combinator xsi-type="Skip">
