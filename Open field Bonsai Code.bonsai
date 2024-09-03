@@ -51,7 +51,10 @@ def process(input):
     center_y_max = (arena_size + center_size) / 2
     
     # Check if the centroid is within the central zone
-    in_center = (center_x_min <= centroid.X <= center_x_max) and (center_y_min <= centroid.Y <= center_y_max)
+    in_center_x = (center_x_min <= centroid.X) and (centroid.X <= center_x_max)
+    in_center_y = (center_y_min <= centroid.Y) and (centroid.Y <= center_y_max)
+    in_center = in_center_x and in_center_y
+    
     return in_center</q2:Script>
       </Expression>
 
@@ -115,17 +118,17 @@ def process(value):
             </Edge>
             <Edge>
               <From>2</From>
-              <To>0</To>
+              <To>0</From>
               <Label>Source1</Label>
             </Edge>
             <Edge>
               <From>3</From>
-              <To>1</To>
+              <To>1</From>
               <Label>Source1</Label>
             </Edge>
             <Edge>
               <From>3</From>
-              <To>2</To>
+              <To>2</From>
               <Label>Source1</Label>
             </Edge>
           </Edges>
@@ -160,7 +163,7 @@ def process(value):
         <Label>Source1</Label>
       </Edge>
       <Edge>
-        <From>4</From>
+        <From>4</To>
         <To>5</To>
         <Label>Source1</Label>
       </Edge>
