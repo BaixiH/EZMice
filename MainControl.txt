@@ -1,0 +1,31 @@
+import picamera
+import datetime
+
+# Configuration
+record_duration = 600  # 10 minutes in seconds
+save_path = "/home/pi/videos/"  # Update this path as needed
+chamber_number = 1  # Example chamber number
+animal_tag = "A123"  # Animal tag number; update this as needed
+
+def get_filename():
+    """Generate a filename with chamber number, animal tag, current date and time."""
+    now = datetime.datetime.now()
+    filename = "Chamber{}_Tag{}_{}.h264".format(chamber_number, animal_tag, now.strftime("%Y%m%d_%H%M%S"))
+    return filename
+
+def record_video(duration, filename):
+    """Record video for a given duration and save to a file."""
+    with picamera.PiCamera() as camera:
+        camera.resolution = (1920, 1080)  # HD resolution; adjust as needed
+        camera.start_recording(filename)
+        camera.wait_recording(duration)
+        camera.stop_recording()
+    
+    print(f"Video saved to {filename}")
+
+def main():
+    full_path = save_path + get_filename()
+    record_video(record_duration, full_path)
+
+if __name__ == "__main__":
+    main()
